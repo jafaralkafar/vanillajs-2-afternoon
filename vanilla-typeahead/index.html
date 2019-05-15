@@ -44,6 +44,7 @@
             border: 1px solid rgba(0, 0, 0, 0.2);
             border-radius: 4px;
             box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+            visibility: hidden;
         }
 
         li:hover {
@@ -77,13 +78,55 @@
         <h1>Try Typing...</h1>
         <div class="input-container">
             <input type="text">
-            <ul id="list"></ul>
+            <ul id="list" ></ul>
         </div>
     </div>
 
 </body>
 
 <script>
+    let fetched = []
+    let list = document.getElementById('list')
+    let search = document.querySelector('input')
+    // console.dir(list)
+    fetch('https://swapi.co/api/people')
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(response) {
+            fetched.push(...response.results)
+            
+            
+        })
+
+    function filterText() {
+        // let filtered = fetched.filter(function(i) {
+        //          return i.name.toLowerCase().includes(this.value.toLowerCase())
+        //          })
+        //     .map(function(i) {
+        //         return `<li>${i.name}</li>`
+        //         })
+        let filtered = fetched.filter(val => val.name.toLowerCase().includes(this.value.toLowerCase()))
+            .map(val => `<li>${val.name}</li>`)
+
+        if (filtered.length) {
+        
+            render(filtered)
+        }
+    }
+
+    function render(array) {
+
+        let html = array.join('')
+        list.style.visibility = 'visible'
+        list.innerHTML = html
+        if (!search) {
+            list.innerHTML = ''
+            list.style.visibility = 'hidden'
+        }
+
+    }
+    search.addEventListener('keyup', filterText)
 </script>
 
 </html>
